@@ -1,0 +1,47 @@
+# LLM Fine-tuning Configuration
+
+# Model Configuration
+model:
+  name: "gpt2"  # Can be changed to other models like "distilgpt2", "microsoft/phi-2", etc.
+  load_in_8bit: false  # Set to true for memory-efficient training
+  device: "auto"  # auto, cuda, cpu
+
+# Training Configuration
+training:
+  output_dir: "./models/fine_tuned_model"
+  num_train_epochs: 3
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 2
+  learning_rate: 2.0e-5
+  weight_decay: 0.01
+  warmup_steps: 100
+  logging_steps: 10
+  save_steps: 500
+  eval_steps: 500
+  save_total_limit: 2
+  fp16: false  # Set to true if using CUDA with fp16 support
+  evaluation_strategy: "steps"
+  load_best_model_at_end: true
+  metric_for_best_model: "eval_loss"
+
+# Dataset Configuration
+dataset:
+  train_file: "data/train.json"
+  eval_file: "data/eval.json"
+  test_file: "data/test.json"
+  text_column: "text"  # Column name containing the text data
+  max_length: 512  # Maximum sequence length
+
+# LoRA Configuration (for parameter-efficient fine-tuning)
+lora:
+  enabled: false  # Set to true to use LoRA
+  r: 8
+  lora_alpha: 32
+  lora_dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+
+# Logging
+logging:
+  wandb_enabled: false  # Set to true to use Weights & Biases
+  wandb_project: "llm-finetuning"
