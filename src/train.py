@@ -75,7 +75,7 @@ class LLMFineTuner:
                 
             except ImportError:
                 print("Warning: peft library not installed. LoRA will not be applied.")
-                print("Install with: pip install peft")
+                print("Install with: pip install peft>=0.4.0")
         
         # Ensure model uses the same padding token
         if self.model.config.pad_token_id is None:

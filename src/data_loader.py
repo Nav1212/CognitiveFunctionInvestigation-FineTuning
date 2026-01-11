@@ -114,7 +114,7 @@ class DataLoader:
         return tokenized_datasets
 
 
-def load_custom_dataset(file_path: str, tokenizer: PreTrainedTokenizer, max_length: int = 512) -> Dataset:
+def load_custom_dataset(file_path: str, tokenizer: PreTrainedTokenizer, max_length: int = 512, text_column: str = 'text') -> Dataset:
     """
     Convenience function to load a single dataset file.
     
@@ -122,11 +122,13 @@ def load_custom_dataset(file_path: str, tokenizer: PreTrainedTokenizer, max_leng
         file_path: Path to the JSON file
         tokenizer: Tokenizer for preprocessing
         max_length: Maximum sequence length
+        text_column: Name of the column containing text data
         
     Returns:
         Preprocessed Dataset
     """
     loader = DataLoader(tokenizer, max_length)
+    loader.text_column = text_column  # Set the text column name
     data = loader.load_json_data(file_path)
     dataset = Dataset.from_list(data)
     
