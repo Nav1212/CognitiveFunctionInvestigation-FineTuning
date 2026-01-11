@@ -8,8 +8,8 @@ import os
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-from src.config import Config
-from src.train import LLMFineTuner
+from config import Config
+from train import LLMFineTuner
 
 
 def main():

@@ -55,11 +55,35 @@ class LLMFineTuner:
             **model_kwargs
         )
         
+        # Apply LoRA if enabled
+        if self.config.lora.enabled:
+            try:
+                from peft import LoraConfig, get_peft_model
+                print("Applying LoRA configuration...")
+                
+                lora_config = LoraConfig(
+                    r=self.config.lora.r,
+                    lora_alpha=self.config.lora.lora_alpha,
+                    lora_dropout=self.config.lora.lora_dropout,
+                    target_modules=self.config.lora.target_modules,
+                    bias="none",
+                    task_type="CAUSAL_LM"
+                )
+                
+                self.model = get_peft_model(self.model, lora_config)
+                self.model.print_trainable_parameters()
+                
+            except ImportError:
+                print("Warning: peft library not installed. LoRA will not be applied.")
+                print("Install with: pip install peft")
+        
         # Ensure model uses the same padding token
         if self.model.config.pad_token_id is None:
             self.model.config.pad_token_id = self.tokenizer.pad_token_id
         
-        print(f"Model loaded successfully. Parameters: {self.model.num_parameters():,}")
+        if not self.config.lora.enabled:
+            print(f"Model loaded successfully. Parameters: {self.model.num_parameters():,}")
+
     
     def prepare_data(self):
         """Prepare training and evaluation datasets."""

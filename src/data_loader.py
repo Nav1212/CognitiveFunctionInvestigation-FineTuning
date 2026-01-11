@@ -20,6 +20,7 @@ class DataLoader:
         """
         self.tokenizer = tokenizer
         self.max_length = max_length
+        self.text_column = 'text'  # Will be set by prepare_datasets
     
     def load_json_data(self, file_path: str) -> List[Dict]:
         """
@@ -40,14 +41,14 @@ class DataLoader:
         Preprocess examples for training.
         
         Args:
-            examples: Batch of examples with 'text' field
+            examples: Batch of examples with text field
             
         Returns:
             Tokenized examples
         """
-        # Tokenize the texts
+        # Tokenize the texts using the configured column name
         tokenized = self.tokenizer(
-            examples['text'],
+            examples[self.text_column],
             truncation=True,
             max_length=self.max_length,
             padding='max_length',
@@ -78,6 +79,9 @@ class DataLoader:
         Returns:
             DatasetDict containing train, eval, and optionally test splits
         """
+        # Store the text column name for use in preprocessing
+        self.text_column = text_column
+        
         # Load training data
         train_data = self.load_json_data(train_file)
         train_dataset = Dataset.from_list(train_data)
